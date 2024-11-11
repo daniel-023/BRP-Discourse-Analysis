@@ -4,9 +4,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import nltk
-from nltk.tokenize import word_tokenize
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import stopwords
 from collections import Counter
 from pathlib import Path
 import re
@@ -30,49 +27,29 @@ def set_page_config():
         </style>
     """, unsafe_allow_html=True)
 
-
-@st.cache_resource
-def setup_nltk():
-    try:
-        nltk_dir = Path("./nltk_data")
-        nltk_dir.mkdir(exist_ok=True)
-        nltk.data.path.append(str(nltk_dir))
-        
-        resources = ['punkt', 'stopwords', 'wordnet']
-        for resource in resources:
-            try:
-                nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' 
-                             else f'corpora/{resource}')
-            except LookupError:
-                nltk.download(resource, download_dir=str(nltk_dir))
-        
-        return True
-        
-    except Exception as e:
-        st.error(f"Failed to set up NLTK: {str(e)}")
-        return False
-
-
 def analyze_discourse(df):
-    lemmatizer = WordNetLemmatizer()
     analyzer = SentimentIntensityAnalyzer()
     # Custom stopwords with categories
-    custom_stops = {
-        'location': ['bedok', 'reservoir', 'singapore'],
-        'common': ['one', 'like', 'dont', 'really', 'around', 'thanks', 'place', 'think', 'was'],
-        'time': ['today', 'yesterday', 'now', 'time', 'day', 'night', 'evening', 'morning']
+    stopwords = {
+        # Common English stopwords
+        'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
+        'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
+        'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her',
+        'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their',
+        
+        # Context-specific stopwords
+        'bedok', 'reservoir', 'singapore', 'like', 'really', 'just',
+        'get', 'got', 'went', 'go', 'going', 'think', 'thought',
+        'can', 'could', 'would', 'also', 'way', 'since', 'still',
+        'im', 'ive', 'thats', 'dont', 'around', 'area'
     }
-    
-    all_stops = set(stopwords.words('english') + 
-                   [word for category in custom_stops.values() for word in category])
     
     def clean_text(text):
         """Clean and tokenize text"""
         text = str(text).lower()
         text = re.sub(r'[^\w\s]', '', text)
-        tokens = word_tokenize(text)
-        # Lemmatize and filter tokens
-        return [lemmatizer.lemmatize(t) for t in tokens if t not in all_stops and len(t) > 2]
+        tokens = text.split()
+        return [t for t in tokens if t not in stopwords and len(t) > 2]
     
     # Prepare data
     df['clean_tokens'] = df['text'].apply(clean_text)
