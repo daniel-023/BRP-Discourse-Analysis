@@ -11,22 +11,13 @@ from collections import Counter
 import re
 
 
-try:
-    nltk.data.find('tokenizers/punkt')
-except LookupError:
-    nltk.download('punkt')
-
-try:
-    nltk.data.find('corpora/stopwords')
-except LookupError:
-    nltk.download('stopwords')
-
-try:
-    nltk.data.find('corpora/wordnet')
-except LookupError:
-    nltk.download('wordnet')
-
-
+@st.cache_resource
+def setup_nltk():
+    resources = ['punkt', 'stopwords', 'wordnet']
+    for resource in resources:
+        nltk.download(resource)
+    
+setup_nltk()
 lemmatizer = WordNetLemmatizer()
 analyzer = SentimentIntensityAnalyzer()
 
