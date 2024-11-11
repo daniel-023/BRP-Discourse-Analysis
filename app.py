@@ -34,10 +34,7 @@ def set_page_config():
 def setup_nltk():
     resources = ['punkt', 'stopwords', 'wordnet']
     for resource in resources:
-        try:
-            nltk.data.find(f'tokenizers/{resource}')
-        except LookupError:
-            nltk.download(resource)
+        nltk.download(resource)
 
 
 def analyze_discourse(df):
