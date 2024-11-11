@@ -11,16 +11,6 @@ from collections import Counter
 import re
 
 
-@st.cache_resource
-def setup_nltk():
-    resources = ['punkt', 'stopwords', 'wordnet']
-    for resource in resources:
-        nltk.download(resource)
-    
-setup_nltk()
-lemmatizer = WordNetLemmatizer()
-analyzer = SentimentIntensityAnalyzer()
-
 def set_page_config():
     st.set_page_config(
         page_title="Bedok Reservoir Park Discourse Analysis",
@@ -39,7 +29,17 @@ def set_page_config():
         </style>
     """, unsafe_allow_html=True)
 
+
+@st.cache_resource
+def setup_nltk():
+    resources = ['punkt', 'stopwords', 'wordnet']
+    for resource in resources:
+        nltk.download(resource)
+
+
 def analyze_discourse(df):
+    lemmatizer = WordNetLemmatizer()
+    analyzer = SentimentIntensityAnalyzer()
     # Custom stopwords with categories
     custom_stops = {
         'location': ['bedok', 'reservoir', 'singapore'],
@@ -215,10 +215,10 @@ def show_content_analysis(df):
 
 def main():
     set_page_config()
-    
+    setup_nltk()
+
     st.title("💭 Bedok Reservoir Reddit Discourse Analysis")
     
-    # Load and process data
     try:
         df = pd.read_csv('BRP_reddit_data.csv')
         df = analyze_discourse(df)
