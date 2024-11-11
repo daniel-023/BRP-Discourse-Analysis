@@ -219,7 +219,7 @@ def show_content_analysis(df):
     
     view_option = st.selectbox(
         "View posts by:",
-        ["Most Discussed Topics", "Most Positive", "Most Negative", "Recent Posts"]
+        ["Most Positive", "Most Negative", "Recent Posts"]
     )
     
     if view_option == "Most Positive":
@@ -230,13 +230,10 @@ def show_content_analysis(df):
         filtered_df = df.nsmallest(5, 'sentiment')
         st.write("### Most Negative Posts")
         
-    elif view_option == "Recent Posts":
+    else:
         filtered_df = df.sort_values('created_utc', ascending=False).head(5)
         st.write("### Recent Posts")
         
-    else:  
-        filtered_df = df[df['text'].str.len() > 100].sort_values('created_utc', ascending=False).head(5)
-        st.write("### Most Substantial Discussions")
     
     for _, post in filtered_df.iterrows():
         with st.expander(f"Post from {post['created_utc'].strftime('%Y-%m-%d')}"):
@@ -253,7 +250,6 @@ def show_content_analysis(df):
 
 def main():
     set_page_config()
-    setup_nltk()
 
     st.title("💭 Bedok Reservoir Reddit Discourse Analysis")
     
