@@ -36,6 +36,7 @@ def analyze_discourse(df):
         'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
         'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her',
         'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their',
+        'are', 'was', 'its', 'about', 'what', 'other'
         
         # Context-specific stopwords
         'bedok', 'reservoir', 'singapore', 'like', 'really', 'just',
