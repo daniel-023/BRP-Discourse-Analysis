@@ -8,6 +8,7 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import stopwords
 from collections import Counter
+from pathlib import Path
 import re
 
 
@@ -32,9 +33,24 @@ def set_page_config():
 
 @st.cache_resource
 def setup_nltk():
-    resources = ['punkt', 'stopwords', 'wordnet']
-    for resource in resources:
-        nltk.download(resource)
+    try:
+        nltk_dir = Path("./nltk_data")
+        nltk_dir.mkdir(exist_ok=True)
+        nltk.data.path.append(str(nltk_dir))
+        
+        resources = ['punkt', 'stopwords', 'wordnet']
+        for resource in resources:
+            try:
+                nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' 
+                             else f'corpora/{resource}')
+            except LookupError:
+                nltk.download(resource, download_dir=str(nltk_dir))
+        
+        return True
+        
+    except Exception as e:
+        st.error(f"Failed to set up NLTK: {str(e)}")
+        return False
 
 
 def analyze_discourse(df):
