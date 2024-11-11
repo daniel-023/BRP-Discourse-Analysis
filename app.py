@@ -64,6 +64,7 @@ def analyze_discourse(df):
         'like', 'really', 'just', 'very', 'so', 'too', 'quite',
         'maybe', 'probably', 'definitely', 'actually', 'basically',
         'think', 'thought', 'know', 'feel', 'felt', 'mean', 'meant',
+        'not', 'other', 'all', 'will', 'what', 'about',
         
         # Common verbs in context
         'go', 'going', 'went', 'gone',
