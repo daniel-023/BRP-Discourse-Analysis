@@ -29,20 +29,63 @@ def set_page_config():
 
 def analyze_discourse(df):
     analyzer = SentimentIntensityAnalyzer()
-    # Custom stopwords with categories
+
     stopwords = {
-        # Common English stopwords
-        'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i',
-        'it', 'for', 'not', 'on', 'with', 'he', 'as', 'you', 'do', 'at',
-        'this', 'but', 'his', 'by', 'from', 'they', 'we', 'say', 'her',
-        'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their',
-        'are', 'was', 'its', 'about', 'what', 'other', 'your', 'were', 'been',
+        # Common English articles and prepositions
+        'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 
+        'with', 'by', 'from', 'up', 'down', 'into', 'over', 'under', 'again',
         
-        # Context-specific stopwords
-        'bedok', 'reservoir', 'singapore', 'like', 'really', 'just',
-        'get', 'got', 'went', 'go', 'going', 'think', 'thought',
-        'can', 'could', 'would', 'also', 'way', 'since', 'still',
-        'im', 'ive', 'thats', 'dont', 'around', 'area'
+        # Pronouns
+        'i', 'me', 'my', 'mine', 'myself',
+        'you', 'your', 'yours', 'yourself',
+        'he', 'him', 'his', 'himself',
+        'she', 'her', 'hers', 'herself',
+        'it', 'its', 'itself',
+        'we', 'us', 'our', 'ours', 'ourselves',
+        'they', 'them', 'their', 'theirs', 'themselves',
+        'this', 'that', 'these', 'those',
+        
+        # Common verbs and auxiliary verbs
+        'is', 'am', 'are', 'was', 'were', 'be', 'been', 'being',
+        'have', 'has', 'had', 'having',
+        'do', 'does', 'did', 'doing',
+        'would', 'should', 'could', 'might', 'must', 'can',
+        
+        # Location-specific terms
+        'bedok', 'reservoir', 'singapore', 'sg', 'east', 'park',
+        'area', 'place', 'around', 'near', 'location', 'here', 'there',
+        
+        # Time-related words
+        'time', 'day', 'today', 'yesterday', 'tomorrow', 'now', 'then',
+        'morning', 'afternoon', 'evening', 'night', 'week', 'month', 'year',
+        'always', 'never', 'sometimes',
+        
+        # Common conversational words
+        'like', 'really', 'just', 'very', 'so', 'too', 'quite',
+        'maybe', 'probably', 'definitely', 'actually', 'basically',
+        'think', 'thought', 'know', 'feel', 'felt', 'mean', 'meant',
+        
+        # Common verbs in context
+        'go', 'going', 'went', 'gone',
+        'get', 'getting', 'got', 'gotten',
+        'take', 'taking', 'took', 'taken',
+        'see', 'seeing', 'saw', 'seen',
+        'come', 'coming', 'came',
+        'want', 'wanted', 'wanting',
+        
+        # Internet/casual speech
+        'im', 'ive', 'id', 'thats', 'dont', 'cant', 'wouldnt', 'couldnt',
+        'isnt', 'arent', 'wasnt', 'werent', 'hasnt', 'havent', 'hadnt',
+        'wont', 'didnt',
+        
+        # Quantities and numbers
+        'one', 'two', 'three', 'first', 'second', 'third',
+        'many', 'much', 'more', 'most', 'some', 'any', 'few', 'lot',
+        
+        # Other common words in your context
+        'also', 'way', 'since', 'still', 'back', 'even', 'well',
+        'make', 'made', 'thing', 'things', 'something', 'anything',
+        'everything', 'nothing', 'every', 'each', 'another', 'else'
     }
     
     def clean_text(text):
